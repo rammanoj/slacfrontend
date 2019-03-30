@@ -13,12 +13,28 @@ export const fetchAsynchronous = (uri, method, data, headers, callback) => {
   fetch(uri, {
     method: method,
     body: method === "GET" ? undefined : JSON.stringify(data),
-    headers: headers
+    headers: headers,
+    credentials: "include"
   })
-    .then(response => response.json())
-    .then(object => callback(object))
+    .then(response => {
+      console.log("came here");
+      console.log(response);
+      if (response.ok) {
+        return response.json();
+      } else {
+        if (response.bodyUsed) {
+          return response.json();
+        } else {
+          return { message: "Error while fetching the server" };
+        }
+      }
+    })
+    .then(object => {
+      console.log(object);
+      return callback(object);
+    })
     .catch(error => {
       console.log(error);
-      //   alert("Error occured on the server, please try again later");
+      alert(error);
     });
 };

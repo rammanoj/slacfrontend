@@ -6,11 +6,12 @@ import { NavBar } from "./elements/nav";
 import { UForm } from "./elements/Form";
 import { fetchAsynchronous } from "./controllers/fetch";
 import loading from "./../img/loading.gif";
-import { login, forgotPassword, logout } from "./../api";
+import { login, logout } from "./../api";
 import loadingForm from "./../img/formloading.gif";
-import { Grid, Link, Zoom, Button, Paper } from "@material-ui/core";
+import { Grid, Link, Zoom, Button, Paper, withStyles } from "@material-ui/core";
+import { login as loginStyle } from "./../styles/style";
 
-class Login extends React.Component {
+class LoginComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -95,7 +96,7 @@ class Login extends React.Component {
 
   HandleFormSubmit = e => {
     e.preventDefault();
-    let s = { marginLeft: -10, marginTop: -10 };
+    let s = { marginLeft: 30, marginTop: -10 };
     this.setState({
       message: "",
       formLoading: (
@@ -107,15 +108,11 @@ class Login extends React.Component {
         />
       )
     });
-    let rem = 0;
-    if (this.state.remember_me) {
-      rem = 1;
-    }
+
     this.setState({ disabled: true });
     let data = {
-      user: this.state.user,
-      password: this.state.password,
-      remember_me: rem
+      username: this.state.user,
+      password: this.state.password
     };
     let headers = {
       "Content-Type": "application/json"
@@ -128,27 +125,16 @@ class Login extends React.Component {
       disabled: false,
       formLoading: false
     });
-    if (data.error === 1) {
+    if (data.hasOwnProperty("message")) {
       // Error occured, show the error
       this.setState({ message: data.message, messageClass: "red" });
     } else {
       // set the cookies and redirect to home page.
-      let date = Date.now();
-      if (this.state.remember_me) {
-        date = Date.now() + 90 * 60 * 60 * 24 * 1000;
-      } else {
-        date = Date.now() + 7 * 60 * 60 * 24 * 1000;
-      }
-
+      let date = Date.now() + 90 * 60 * 60 * 24 * 1000;
       let cookies = [
         {
           key: "token",
           value: data.token,
-          age: date
-        },
-        {
-          key: "user",
-          value: data.user_id,
           age: date
         },
         {
@@ -164,6 +150,7 @@ class Login extends React.Component {
 
   render = () => {
     let { state: s } = this;
+    let { classes: cn } = this.props;
     if (s.isLoggedIn) {
       // return to the home page
       return <Redirect to="/home" />;
@@ -176,9 +163,9 @@ class Login extends React.Component {
           <Grid item sm={4} />
           <Grid item sm={4}>
             <NavBar value={0} />
-            <Paper>
-              <h4>Login Here</h4>
-              <div className="login" style={{ paddingLeft: -10 }}>
+            <Zoom in={true}>
+              <Paper className={cn.paper}>
+                <h3 className={cn.header}>Login</h3>
                 <UForm
                   formLoading={this.state.formLoading}
                   formClass="formStyle"
@@ -194,179 +181,17 @@ class Login extends React.Component {
                   ]}
                 />
                 <Link
+                  style={{ marginLeft: "8vw" }}
                   component={RouteLink}
-                  style={{ marginLeft: 60 }}
-                  to="/forgotpassword"
+                  to="/register"
                 >
-                  Forgot Password ?
-                </Link>{" "}
-                |{" "}
-                <Link component={RouteLink} to="/signup">
                   Don't have account ?
                 </Link>{" "}
-              </div>
-            </Paper>
+              </Paper>
+            </Zoom>
           </Grid>
           <Grid item sm={4} />
         </Grid>
-      );
-    }
-  };
-}
-
-class ForgotPassword extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoggedIn: getCookie("token")[1],
-      email: "",
-      message: "",
-      disabled: true,
-      messageClass: "",
-      success: true,
-      validators: validator,
-      formLoading: false,
-      checked: false
-    };
-  }
-
-  componentDidMount = () => {
-    this.setState({ checked: true });
-  };
-
-  updateState = (name, value) => {
-    this.setState({ [name]: value });
-    return this.state[name];
-  };
-
-  getInputs = () => {
-    let inputs = [],
-      obj = {};
-    obj.name = "email";
-    obj.type = "email";
-    obj.labels = "Email";
-    obj.value = this.state.email;
-    obj.handle = this.HandleAllFields;
-    inputs.push(obj);
-    return inputs;
-  };
-
-  HandleAllFields = e => {
-    let { name, value } = e.target;
-    let formFields = ["email"];
-    let formFieldValues = [this.state.email];
-    handleAllFields(
-      name,
-      value,
-      formFields,
-      formFieldValues,
-      true,
-      validator,
-      this.updateState
-    );
-  };
-
-  HandleClearForm = () => {
-    this.setState({
-      email: "",
-      message: "",
-      disabled: true,
-      messageClass: "",
-      validators: validator,
-      formLoading: false
-    });
-  };
-
-  componentWillUnmount = () => {
-    this.HandleClearForm();
-  };
-
-  HandleFormSubmit = e => {
-    e.preventDefault();
-    let s = { marginLeft: 60, marginTop: -10 };
-    this.setState({
-      message: "",
-      formLoading: (
-        <img
-          src={loadingForm}
-          alt="Loading...."
-          style={s}
-          className="loading"
-        />
-      )
-    });
-    this.setState({ disabled: true });
-    let data = {
-      email: this.state.email
-    };
-    let headers = {
-      "Content-Type": "application/json"
-    };
-    fetchAsynchronous(
-      forgotPassword,
-      "POST",
-      data,
-      headers,
-      this.HandleResponse
-    );
-  };
-
-  HandleResponse = data => {
-    this.setState({
-      disabled: false,
-      formLoading: false
-    });
-    if (data.error === 1) {
-      // Error occured, show the error
-      this.setState({ message: data.message, messageClass: "red" });
-    } else {
-      this.setState({ message: data.message, messageClass: "green" });
-    }
-  };
-
-  render = () => {
-    let { state: obj } = this;
-    if (obj.isLoggedIn) {
-      //   return to the home page
-      return <Redirect to="/home" />;
-    } else {
-      // Display the Form to the user.
-      document.body.style = "background: #fafafa;";
-      let inputs = this.getInputs();
-      // render the components
-      return (
-        <div style={{ display: this.state.hide }}>
-          <Grid container spacing={24}>
-            <Grid item sm={4} />
-            <Grid item sm={4}>
-              <div style={{ display: this.state.hide }}>
-                <NavBar value={false} />
-                <Zoom in={this.state.checked}>
-                  <div className="component">
-                    <h4>Forgot Password</h4>
-                    <div
-                      className="forgot_password"
-                      style={{ paddingLeft: -10 }}
-                    >
-                      <UForm
-                        formLoading={this.state.formLoading}
-                        formClass="formStyle"
-                        onClick={this.HandleFormSubmit}
-                        button="Validate"
-                        disabled={this.state.disabled}
-                        message={this.state.message}
-                        messageClass={this.state.messageClass}
-                        inputs={inputs}
-                        validators={[this.state.validators["email"].errors[0]]}
-                      />
-                    </div>
-                  </div>
-                </Zoom>
-              </div>
-            </Grid>
-            <Grid item sm={4} />
-          </Grid>
-        </div>
       );
     }
   };
@@ -457,4 +282,5 @@ class Logout extends React.Component {
   };
 }
 
-export { Login, ForgotPassword, Logout };
+const Login = withStyles(loginStyle)(LoginComponent);
+export { Login, Logout };

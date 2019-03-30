@@ -4,32 +4,53 @@ import validator, { handleAllFields } from "./controllers/validator";
 import { Redirect } from "react-router-dom";
 import { NavBar } from "./elements/nav";
 import { fetchAsynchronous } from "./controllers/fetch";
-import { signup, states } from "./../api";
+import { signup } from "./../api";
 import loadingForm from "./../img/formloading.gif";
 import {
   Grid,
   Button,
   TextField,
-  Select,
+  withStyles,
+  Chip,
   InputLabel,
-  withStyles
+  Select,
+  Input,
+  Paper,
+  Zoom
 } from "@material-ui/core";
+import { register } from "./../styles/style";
+import { RegsiterMenu } from "./../api";
 
-class Register extends React.Component {
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const Menuprops = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
+
+class RegisterComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoggedIn: getCookie("token")[1],
+      name: "",
       username: "",
       password: "",
       confirm_password: "",
+      experience: "",
+      institution: "",
       email: "",
       message: "",
       disabled: true,
       messageClass: "",
       validators: validator,
       formLoading: false,
-      checked: false
+      checked: false,
+      spec: []
     };
   }
 
@@ -45,17 +66,20 @@ class Register extends React.Component {
   HandleAllFields = e => {
     let { name, value } = e.target;
     let formFields = [
+      "name",
       "username",
       "password",
       "confirm_password",
       "email",
-      "select"
+      "institution"
     ];
     let formFieldValues = [
+      this.state.name,
       this.state.username,
       this.state.password,
       this.state.confirm_password,
-      this.state.email
+      this.state.email,
+      this.state.institution
     ];
     handleAllFields(
       name,
@@ -88,7 +112,7 @@ class Register extends React.Component {
 
   HandleFormSubmit = e => {
     e.preventDefault();
-    let s = { marginTop: -40 };
+    let s = { marginTop: 0, marginLeft: 50 };
     this.setState({
       message: "",
       formLoading: (
@@ -100,25 +124,35 @@ class Register extends React.Component {
         />
       )
     });
-    this.setState({ disabled: true });
-    let data = {
-      username: this.state.username,
-      password: this.state.password,
-      confirm_password: this.state.confirm_password,
-      email: this.state.email
-    };
-    let headers = {
-      "Content-Type": "application/json"
-    };
-    fetchAsynchronous(signup, "POST", data, headers, this.HandleResponse);
+    if (this.state.password === this.state.confirm_password) {
+      this.setState({ disabled: true });
+      let data = {
+        name: this.state.name,
+        username: this.state.username,
+        password: this.state.password,
+        email: this.state.email,
+        institution: this.state.institution,
+        specs: this.state.spec
+      };
+      let headers = {
+        "Content-Type": "application/json"
+      };
+      fetchAsynchronous(signup, "POST", data, headers, this.HandleResponse);
+    } else {
+      this.setState({
+        message: "Enter same passwords both the times",
+        messageClass: "red",
+        formLoading: false,
+        disabled: false
+      });
+    }
   };
 
   HandleResponse = data => {
     this.setState({
       disabled: false
     });
-    if (data.error === 1) {
-      // Error occured, show the error
+    if (data.message !== "Created new user!") {
       this.setState({
         message: data.message,
         messageClass: "red",
@@ -126,11 +160,25 @@ class Register extends React.Component {
         disabled: false
       });
     } else {
-      localStorage.setItem("mobile", this.state.mobile);
-      this.setState({ success: true });
+      this.setState({
+        message: data.message,
+        messageClass: "green",
+        formLoading: false,
+        disabled: false
+      });
     }
   };
 
+  handleChange = e => {
+    const options = e.target.value;
+    const value = [];
+    for (let i = 0, l = options.length; i < l; i += 1) {
+      value.push(options[i]);
+    }
+    this.setState({
+      spec: value
+    });
+  };
   render = () => {
     document.body.style = "background: #fafafa;";
     let { state: obj } = this;
@@ -147,126 +195,149 @@ class Register extends React.Component {
         );
       }
       document.body.style = "background: #fafafa;";
+      let { classes: cn } = this.props;
       return (
         <Grid container spacing={24}>
           <Grid item md={4} />
           <Grid item md={4}>
             <NavBar value={1} />
-            <div className="signup_component">
-              <h4>Register</h4>
-              <div className="signup">
-                <div
-                  style={{
-                    paddingLeft: 60,
-                    color: this.state.messageClass,
-                    paddingBottom: 5
-                  }}
-                >
-                  <b> {this.state.message !== "" ? this.state.message : ""}</b>
-                </div>
-                <form>
-                  <Grid container spacing={24} style={{ marginLeft: 20 }}>
-                    <Grid item md={5} style={{ marginLeft: "5%" }}>
-                      <TextField
-                        id="username"
-                        name="username"
-                        onChange={this.HandleAllFields}
-                        value={this.state.username}
-                        type="text"
-                        label="Username"
-                        helperText={this.state.validators["username"].errors[0]}
-                      />
-                    </Grid>
-                    <Grid item md={5} style={{ marginLeft: "5%" }}>
-                      <TextField
-                        id="email"
-                        name="email"
-                        onChange={this.HandleAllFields}
-                        value={this.state.email}
-                        type="email"
-                        label="Email"
-                        helperText={this.state.validators["email"].errors[0]}
-                      />
-                    </Grid>
-                    <Grid item md={5} style={{ marginLeft: "5%" }}>
-                      <TextField
-                        id="password"
-                        name="password"
-                        onChange={this.HandleAllFields}
-                        value={this.state.password}
-                        fullWidth
-                        type="password"
-                        label="Password"
-                        helperText={this.state.validators["password"].errors[0]}
-                      />
-                    </Grid>
-                    <Grid item md={5} style={{ marginLeft: "5%" }}>
-                      <TextField
-                        id="confirm_password"
-                        name="confirm_password"
-                        onChange={this.HandleAllFields}
-                        value={this.state.confirm_password}
-                        fullWidth
-                        type="password"
-                        label="Re-Type Password"
-                        helperText={
-                          this.state.validators["confirm_password"].errors[0]
-                        }
-                      />
-                    </Grid>
-                    <Grid item md={5} style={{ marginLeft: "5%" }}>
-                      <TextField
-                        id="mobile"
-                        name="mobile"
-                        onChange={this.HandleAllFields}
-                        value={this.state.mobile}
-                        fullWidth
-                        type="text"
-                        label="Mobile"
-                        helperText={this.state.validators["mobile"].errors[0]}
-                      />
-                    </Grid>
-                    <Grid item md={5} style={{ marginLeft: "5%" }}>
-                      <InputLabel htmlFor="state">State</InputLabel>
-                      <Select
-                        value={this.state.state}
-                        onChange={this.HandleAllFields}
-                        fullWidth
-                        inputProps={{
-                          name: "state",
-                          id: "state"
+            <Zoom in={true}>
+              <Paper className={cn.paper}>
+                <h4 className={cn.header}>Register</h4>
+                <div>
+                  <div
+                    style={{
+                      paddingLeft: 60,
+                      color: this.state.messageClass,
+                      paddingBottom: 5
+                    }}
+                  >
+                    <div style={{ textAlign: "center" }}>
+                      <b>
+                        {" "}
+                        {this.state.message !== "" ? this.state.message : ""}
+                      </b>
+                    </div>
+                  </div>
+                  <form>
+                    <Grid container spacing={24} style={{ marginLeft: 20 }}>
+                      <Grid item md={5} style={{ marginLeft: "5%" }}>
+                        <TextField
+                          name="username"
+                          onChange={this.HandleAllFields}
+                          value={this.state.username}
+                          type="text"
+                          label="Username"
+                          helperText={
+                            this.state.validators["username"].errors[0]
+                          }
+                        />
+                      </Grid>
+                      <Grid item md={5} style={{ marginLeft: "5%" }}>
+                        <TextField
+                          name="name"
+                          onChange={this.HandleAllFields}
+                          value={this.state.name}
+                          type="text"
+                          label="Name"
+                        />
+                      </Grid>
+                      <Grid item md={5} style={{ marginLeft: "5%" }}>
+                        <TextField
+                          name="password"
+                          onChange={this.HandleAllFields}
+                          value={this.state.password}
+                          fullWidth
+                          type="password"
+                          label="Password"
+                          helperText={
+                            this.state.validators["password"].errors[0]
+                          }
+                        />
+                      </Grid>
+                      <Grid item md={5} style={{ marginLeft: "5%" }}>
+                        <TextField
+                          name="confirm_password"
+                          onChange={this.HandleAllFields}
+                          value={this.state.confirm_password}
+                          fullWidth
+                          type="password"
+                          label="Re-Type Password"
+                          helperText={
+                            this.state.validators["confirm_password"].errors[0]
+                          }
+                        />
+                      </Grid>
+                      <Grid item md={5} style={{ marginLeft: "5%" }}>
+                        <TextField
+                          name="email"
+                          onChange={this.HandleAllFields}
+                          value={this.state.email}
+                          type="email"
+                          label="Email"
+                          helperText={this.state.validators["email"].errors[0]}
+                        />
+                      </Grid>
+                      <Grid item md={5} style={{ marginLeft: "5%" }}>
+                        <InputLabel htmlFor="spec">Sepcialization</InputLabel>
+                        <Select
+                          multiple
+                          fullWidth
+                          value={this.state.spec}
+                          onChange={this.handleChange}
+                          input={<Input id="spec" />}
+                          renderValue={selected => (
+                            <div>
+                              {selected.map(value => (
+                                <Chip key={value} label={value} />
+                              ))}
+                            </div>
+                          )}
+                          MenuProps={Menuprops}
+                        >
+                          {RegsiterMenu}
+                        </Select>
+                      </Grid>
+                      <Grid item md={5} style={{ marginLeft: 20 }}>
+                        <TextField
+                          id="Institution"
+                          name="institution"
+                          onChange={this.HandleAllFields}
+                          value={this.state.institution}
+                          fullWidth
+                          type="text"
+                          label="Working Instution"
+                          helperText=""
+                        />
+                      </Grid>
+                      <Grid
+                        item
+                        md={5}
+                        style={{
+                          marginTop: "25px",
+                          marginLeft: "25px"
                         }}
                       >
-                        {states}
-                      </Select>
+                        {this.state.formLoading !== false ? (
+                          this.state.formLoading
+                        ) : (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            disabled={this.state.disabled}
+                            onClick={this.HandleFormSubmit}
+                            className="register"
+                            fullWidth
+                          >
+                            Register
+                          </Button>
+                        )}
+                      </Grid>
                     </Grid>
-                    <Grid
-                      item
-                      md={12}
-                      style={{
-                        marginTop: "25px",
-                        marginLeft: "25px",
-                        marginRight: "25px"
-                      }}
-                    >
-                      {this.state.formLoading !== false ? (
-                        this.state.formLoading
-                      ) : (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          disabled={this.state.disabled}
-                          onClick={this.HandleFormSubmit}
-                          className="register"
-                        >
-                          Register
-                        </Button>
-                      )}
-                    </Grid>
-                  </Grid>
-                </form>
-              </div>
-            </div>
+                  </form>
+                </div>
+              </Paper>
+            </Zoom>
           </Grid>
           <Grid item md={4} />
         </Grid>
@@ -275,4 +346,5 @@ class Register extends React.Component {
   };
 }
 
+const Register = withStyles(register)(RegisterComponent);
 export { Register };

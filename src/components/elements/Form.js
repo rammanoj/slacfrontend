@@ -3,8 +3,10 @@ import {
   Button,
   TextField,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  withStyles
 } from "@material-ui/core/";
+import { listing } from "./../../styles/style";
 
 /*
     The Form component generates '<form />' tags.
@@ -18,7 +20,7 @@ import {
     --> 'messageClass' = class to the message display div
     
 */
-class UForm extends React.Component {
+class FormComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -27,10 +29,11 @@ class UForm extends React.Component {
   addInputs = () => {
     let { props: p } = this,
       inputs = [];
+    let { classes: cn } = this.props;
     for (let i in p.inputs) {
       if (p.inputs[i].type === "checkbox") {
         inputs.push(
-          <li key={i}>
+          <li key={i} className={cn.list}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -47,7 +50,7 @@ class UForm extends React.Component {
         );
       } else {
         inputs.push(
-          <li key={i}>
+          <li key={i} className={cn.list}>
             <TextField
               id={p.inputs[i].name}
               label={p.inputs[i].labels}
@@ -69,6 +72,7 @@ class UForm extends React.Component {
   render = () => {
     let inputs = this.addInputs(),
       button;
+    let { classes: cn } = this.props;
     if (this.props.formLoading === false) {
       if (this.props.disabled === true) {
         button = (
@@ -78,7 +82,7 @@ class UForm extends React.Component {
             color="primary"
             disabled
             onClick={this.props.onClick}
-            className="button"
+            className={cn.button}
           >
             {this.props.button}
           </Button>
@@ -90,7 +94,7 @@ class UForm extends React.Component {
             variant="contained"
             color="primary"
             onClick={this.props.onClick}
-            className="button"
+            className={cn.button}
           >
             {this.props.button}
           </Button>
@@ -112,9 +116,9 @@ class UForm extends React.Component {
           <p>{this.props.message !== "" ? this.props.message : ""}</p>
         </div>
         <form className={this.props.formClass}>
-          <ul>
+          <ul className={cn.ul}>
             {inputs}
-            <li>{button}</li>
+            <li className={cn.list}>{button}</li>
           </ul>
         </form>
       </div>
@@ -122,4 +126,5 @@ class UForm extends React.Component {
   };
 }
 
+const UForm = withStyles(listing)(FormComponent);
 export { UForm };

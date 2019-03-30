@@ -1,13 +1,15 @@
+import React from "react";
+import { MenuItem } from "@material-ui/core";
 /*
-    The Rott Backend Domain name and all the avialable api requests are documented here.
+    The Root Backend Domain name and all the avialable api requests are documented here.
 */
 
 const BASE_API_URI = "https://slac-backend.herokuapp.com/";
 
 // method: POST
-export const login = BASE_API_URI + "accounts/login/";
+export const login = BASE_API_URI + "api/login";
 // method: POST
-export const signup = BASE_API_URI + "accounts/signup/";
+export const signup = BASE_API_URI + "api/register";
 // method: POST
 export const forgotPassword = BASE_API_URI + "accounts/forgot_password/";
 // method: POST
@@ -25,6 +27,70 @@ export const userListView = BASE_API_URI + "accounts/users/";
 
 /* List of All States */
 
-export const states = [];
+export const RegisterOptions = [
+  "sample1",
+  "sample2",
+  "sample3",
+  "sample4",
+  "sample5",
+  "sample6",
+  "sample7",
+  "sample8",
+  "sample9",
+  "sample10",
+  "sample11",
+  "sample12",
+  "sample13",
+  "sample14",
+  "sample15"
+];
+
+export const RegsiterMenu = [
+  <MenuItem key="sample1" value="sample1">
+    sample1
+  </MenuItem>,
+  <MenuItem key="sample2" value="sample2">
+    sample2
+  </MenuItem>,
+  <MenuItem key="sample3" value="sample3">
+    sample3
+  </MenuItem>,
+  <MenuItem key="sample4" value="sample4">
+    sample4
+  </MenuItem>,
+  <MenuItem key="sample5" value="sample5">
+    sample5
+  </MenuItem>,
+  <MenuItem key="sample6" value="sample6">
+    sample6
+  </MenuItem>,
+  <MenuItem key="sample7" value="sample7">
+    sample7
+  </MenuItem>,
+  <MenuItem key="sample8" value="sample8">
+    sample8
+  </MenuItem>,
+  <MenuItem key="sample9" value="sample9">
+    sample9
+  </MenuItem>,
+  <MenuItem key="sample10" value="sample10">
+    sample10
+  </MenuItem>,
+  <MenuItem key="sample11" value="sample11">
+    sample11
+  </MenuItem>,
+  <MenuItem key="sample12" value="sample12">
+    sample12
+  </MenuItem>,
+  <MenuItem key="sample13" value="sample13">
+    sample13
+  </MenuItem>,
+  <MenuItem key="sample14" value="sample14">
+    sample14
+  </MenuItem>,
+  <MenuItem key="sample15" value="sample15">
+    sample15
+  </MenuItem>
+];
 
 /* End of List*/
