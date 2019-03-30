@@ -10,14 +10,14 @@ export const fetchSynchronous = async (uri, method, data, headers) => {
 };
 
 export const fetchAsynchronous = (uri, method, data, headers, callback) => {
+  console.log(uri);
+  console.log(method === "GET" ? undefined : JSON.stringify(data));
   fetch(uri, {
     method: method,
     body: method === "GET" ? undefined : JSON.stringify(data),
-    headers: headers,
-    credentials: "include"
+    headers: headers
   })
     .then(response => {
-      console.log("came here");
       console.log(response);
       if (response.ok) {
         return response.json();

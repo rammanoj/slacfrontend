@@ -22,7 +22,7 @@ const listing = () => ({
 
 const register = () => ({
   paper: {
-    marginTop: "calc(80px + 8vw)",
+    marginTop: "calc(80px + 6vw)",
     paddingRight: "30px",
     paddingTop: "30px"
   },
@@ -31,4 +31,6 @@ const register = () => ({
   }
 });
 
-export { login, listing, register };
+const home = () => ({});
+
+export { login, listing, register, home };

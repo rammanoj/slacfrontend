@@ -15,7 +15,7 @@ class LoginComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: getCookie("token")[1],
+      isLoggedIn: getCookie("token1")[1],
       user: "",
       password: "",
       remember_me: false,
@@ -133,13 +133,13 @@ class LoginComponent extends React.Component {
       let date = Date.now() + 90 * 60 * 60 * 24 * 1000;
       let cookies = [
         {
-          key: "token",
-          value: data.token,
+          key: "user",
+          value: this.state.user,
           age: date
         },
         {
-          key: "role",
-          value: data.user,
+          key: "token1",
+          value: data.accessToken,
           age: date
         }
       ];
@@ -201,7 +201,7 @@ class Logout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: getCookie("token")[1],
+      isLoggedIn: getCookie("token1")[1],
       text: "",
       loading: (
         <div style={{ marginTop: "30vh", marginLeft: "40vw" }}>
@@ -215,7 +215,7 @@ class Logout extends React.Component {
     // call the 'LOGOUT API' and 'DELETE THE STORED COOKIES'
     if (this.state.isLoggedIn) {
       let headers = {
-        Authorization: "Token " + getCookie("token")[0].value
+        Authorization: "Token " + getCookie("token1")[0].value
       };
       fetchAsynchronous(
         logout,
@@ -230,7 +230,7 @@ class Logout extends React.Component {
   }
 
   HandleResponse = response => {
-    deleteCookie(["token", "user", "role"]);
+    deleteCookie(["token1", "user"]);
     if (response.error === 0) {
       this.setState({
         loading: false,

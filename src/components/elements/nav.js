@@ -8,14 +8,46 @@ import {
   Tabs,
   Tab,
   Grid,
-  withStyles
+  withStyles,
+  MenuItem,
+  Paper,
+  Button,
+  Modal,
+  Input,
+  FormControl,
+  InputLabel,
+  TextField,
+  Select
 } from "@material-ui/core";
 import loader from "./../../img/loading.gif";
 import { DMenu as Menu } from "./menu";
 import { Redirect } from "react-router-dom";
+import Icon from "@material-ui/core/Icon";
+import loadingForm from "./../../img/formloading.gif";
+import { fetchAsynchronous } from "./../controllers/fetch";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const NavStyle = {
   backgroundColor: "#ffffff"
+};
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250
+    }
+  }
+};
+
+const paper = {
+  marginTop: "20vh",
+  marginLeft: "20vw",
+  marginRight: "20vw",
+  borderColor: "white",
+  padding: "30px"
 };
 
 class PaginateLoading extends React.Component {
@@ -42,13 +74,172 @@ class PaginateLoading extends React.Component {
   );
 }
 
+class AddExp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      formloading: false,
+      description: "",
+      select_dis: [],
+      select_sym: [],
+      diseases: [],
+      symtoms: []
+    };
+  }
+
+  handleChange = event => {
+    this.setState({ name: event.target.value });
+  };
+
+  handleChangeMultiple = event => {
+    const options = event.target.value;
+    let name = event.target.name;
+    const value = [];
+    for (let i = 0, l = options.length; i < l; i += 1) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
+    }
+    this.setState({
+      [name]: value
+    });
+  };
+
+  HandleRequest = data => {
+    let dis = [],
+      symp = [];
+    for (let i in data) {
+      dis.push(
+        <MenuItem key={data.dis[i].spec_name} value={data.dis[i].spec_name}>
+          {data.specs[i].spec_name}
+        </MenuItem>
+      );
+      symp.push(
+        <MenuItem key={data.dis[i].spec_name} value={data.dis[i].spec_name}>
+          {data.specs[i].spec_name}
+        </MenuItem>
+      );
+    }
+
+    this.setState({ diseases: dis, symtoms: symp, loading: false });
+  };
+
+  componentDidMount() {
+    let headers = {
+      Authorization: "Bearer " + getCookie("token1")[0].value
+    };
+    fetchAsynchronous("expuri", "GET", undefined, headers, this.HandleRequest);
+  }
+
+  HandleFormSubmit = e => {
+    e.preventDefault();
+    let s = { marginTop: 0, marginLeft: 50 };
+    this.setState({
+      message: "",
+      formLoading: (
+        <img
+          src={loadingForm}
+          alt="Loading...."
+          style={s}
+          className="loading"
+        />
+      )
+    });
+    let data = {
+      description: this.state.name,
+      username: this.state.username,
+      password: this.state.password
+    };
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getCookie("token1")[0].value
+    };
+    let api;
+    fetchAsynchronous(api, "POST", data, headers, this.HandleResponse);
+  };
+
+  render() {
+    return (
+      <React.Fragment>
+        {this.state.loading === true ? (
+          <CircularProgress style={{ marginLeft: "25vw" }} />
+        ) : (
+          <React.Fragment>
+            {" "}
+            <Typography variant="h6" id="modal-title">
+              Add Experience
+            </Typography>
+            <Grid container spacing={24}>
+              <Grid item md={10}>
+                <InputLabel htmlFor="select-multiple">symtoms</InputLabel>
+                <Select
+                  fullWidth
+                  multiple
+                  name="select_sym"
+                  value={this.state.select_sym}
+                  onChange={this.handleChangeMultiple}
+                  input={<Input id="select-multiple" />}
+                  MenuProps={MenuProps}
+                >
+                  {this.state.symtoms}
+                </Select>
+              </Grid>
+              <Grid item md={10}>
+                <InputLabel htmlFor="select-multiple1">diseases</InputLabel>
+                <Select
+                  fullWidth
+                  multiple
+                  name="select_dis"
+                  value={this.state.select_dis}
+                  onChange={this.handleChangeMultiple}
+                  input={<Input id="select-multiple1" />}
+                  MenuProps={MenuProps}
+                >
+                  {this.state.diseases}
+                </Select>
+              </Grid>
+              <Grid item md={10}>
+                <TextField
+                  fullWidth
+                  id="standard-textarea"
+                  label="Description"
+                  placeholder="Description of the disease treated"
+                  multiline
+                  margin="normal"
+                />
+              </Grid>
+              <Grid item md={10}>
+                {this.state.formLoading === true ? (
+                  <img src={loadingForm} />
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={this.HandleFormSubmit}
+                    className="Add"
+                    fullWidth
+                  >
+                    Update
+                  </Button>
+                )}
+              </Grid>
+            </Grid>
+          </React.Fragment>
+        )}
+      </React.Fragment>
+    );
+  }
+}
+
 class NavBarComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: getCookie("token")[1],
+      isLoggedIn: getCookie("token1")[1],
       value: this.props.value,
-      redirect: undefined
+      redirect: undefined,
+      open: false
     };
   }
 
@@ -64,6 +255,14 @@ class NavBarComponent extends React.Component {
     this.setState({ redirect: undefined });
   }
 
+  handleOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
   render = () => {
     let component;
     if (this.state.redirect !== undefined) {
@@ -71,13 +270,6 @@ class NavBarComponent extends React.Component {
     }
 
     if (this.state.isLoggedIn) {
-      let role = getCookie("user").role;
-      if (role === "Teacher" || role === "Student" || role === "Unpaid") {
-        role = false;
-      } else {
-        role = true;
-      }
-      let open = Boolean(this.state.profile);
       component = (
         <React.Fragment>
           <Grid container spacing={40} justify="flex-start">
@@ -102,24 +294,29 @@ class NavBarComponent extends React.Component {
                 variant="standard"
               >
                 <Tab
-                  label="Dashboard"
-                  to="/dashboard"
+                  label="Home"
+                  to="/home"
                   component={Link}
                   style={{ color: "#000000" }}
                 />
-                {role ? (
-                  <Tab
-                    label="Users"
-                    to="/users"
-                    component={Link}
-                    style={{ color: "#000000" }}
-                  />
-                ) : (
-                  ""
-                )}
               </Tabs>
             </Grid>
           </Grid>
+          <Button onClick={this.handleOpen} color="primary">
+            Add Experience
+          </Button>
+          <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={this.state.open}
+            onClose={this.handleClose}
+          >
+            <Paper style={paper}>
+              <div>
+                <AddExp />
+              </div>
+            </Paper>
+          </Modal>
           <Menu
             label="profile"
             body={["Profile", "Logout"]}

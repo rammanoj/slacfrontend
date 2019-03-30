@@ -10,40 +10,12 @@ const BASE_API_URI = "https://slac-backend.herokuapp.com/";
 export const login = BASE_API_URI + "api/login";
 // method: POST
 export const signup = BASE_API_URI + "api/register";
-// method: POST
-export const forgotPassword = BASE_API_URI + "accounts/forgot_password/";
-// method: POST
-export const mobileverify = BASE_API_URI + "accounts/mobile-verify/";
-// method: POST
-export const mobileverifyResend = BASE_API_URI + "accounts/mobile-resend/";
-// method: GET, PATCH
-export const profile = BASE_API_URI + "accounts/update/";
-// method: PATCH
-export const passwordUpdate = BASE_API_URI + "accounts/password_update/";
+// method: GET
+export const profile = BASE_API_URI + "api/profile/";
 // method: POST
 export const logout = BASE_API_URI + "accounts/logout/";
 // method: GET
 export const userListView = BASE_API_URI + "accounts/users/";
-
-/* List of All States */
-
-export const RegisterOptions = [
-  "sample1",
-  "sample2",
-  "sample3",
-  "sample4",
-  "sample5",
-  "sample6",
-  "sample7",
-  "sample8",
-  "sample9",
-  "sample10",
-  "sample11",
-  "sample12",
-  "sample13",
-  "sample14",
-  "sample15"
-];
 
 export const RegsiterMenu = [
   <MenuItem key="sample1" value="sample1">
