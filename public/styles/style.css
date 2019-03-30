@@ -1,0 +1,396 @@
+/* NavBar Styles */
+
+.nav {
+  background-color: #ffffff;
+}
+
+.header img {
+  width: 100%;
+  height: 45px;
+}
+/* End of NavBar related styles */
+
+/* Forms and it's components related styling */
+
+.formStyle ul {
+  list-style: none;
+}
+
+.formStyle li {
+  display: block;
+  padding: 10px;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.formStyle li:nth-child(1) {
+  padding-top: 0px;
+}
+
+.component {
+  position: relative;
+  min-width: 250px;
+  width: calc(250px + 10vw);
+  margin-top: calc(40px + 8vw);
+  background: #ffffff;
+  padding-right: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  box-shadow: 1px 1px 4px 5px #888888;
+}
+
+.component h4 {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* end of Forms and it's components related styling */
+
+/* Login  */
+
+.login_logo_img {
+  height: 50px;
+  margin-left: 46%;
+}
+
+.login li:nth-child(3),
+.login li:nth-child(4) {
+  border: none;
+  background: inherit;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.login li:nth-child(4) button {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 15px;
+  width: calc(200px + 10vw);
+}
+
+/* End of Login */
+
+/* Univ Declarations */
+
+.loading {
+  margin-left: 40%;
+  margin-top: 15%;
+}
+
+.hide {
+  display: none;
+}
+
+/* End of Univ Declarations */
+
+/* Email Verification */
+
+.forgot_password li:nth-child(2) button {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 15px;
+  width: calc(200px + 10vw);
+}
+
+/* End of Email Verification */
+
+/* Signup Styles */
+
+.signup {
+  padding: 10px;
+}
+
+.signup_component {
+  position: relative;
+  min-width: 250px;
+  width: calc(250px + 20vw);
+  margin-top: calc(40px + 8vw);
+  background: #ffffff;
+  padding-right: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-height: 200px;
+  height: calc(280px + 30vh);
+  box-shadow: 1px 1px 4px 5px #888888;
+}
+
+.signup select {
+  border: none;
+}
+
+.signup_component h4 {
+  display: block;
+  text-align: center;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgba(0, 0, 0, 0.767);
+}
+
+.signup li:nth-child(7) {
+  border: none;
+  background: inherit;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.register {
+  width: 100%;
+}
+/* End of Signup Styles */
+
+/* Mobile Verify */
+
+.mobile_verify .formStyle ul li:last-child {
+  border: none;
+  background: inherit;
+  text-align: center;
+  margin-bottom: 0px;
+}
+
+.mobile_verify h5 {
+  display: block;
+  text-align: center;
+  padding: 0;
+  margin-bottom: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgba(0, 0, 0, 0.767);
+}
+
+.mobile_verify li:nth-child(2) button {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 15px;
+  width: calc(200px + 10vw);
+}
+
+.resend {
+  width: calc(200px + 10vw);
+}
+
+/* End of Mobile Verify */
+
+/* CSS of tick mark */
+
+.checkmark-circle {
+  width: 150px;
+  height: 150px;
+  position: absolute;
+  display: inline-block;
+  vertical-align: top;
+}
+.checkmark-circle .background {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: #ffffff;
+  position: absolute;
+}
+.checkmark-circle .checkmark {
+  border-radius: 5px;
+}
+.checkmark-circle .checkmark.draw:after {
+  -webkit-animation-delay: 100ms;
+  -moz-animation-delay: 100ms;
+  animation-delay: 100ms;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-timing-function: ease;
+  -moz-animation-timing-function: ease;
+  animation-timing-function: ease;
+  -webkit-animation-name: checkmark;
+  -moz-animation-name: checkmark;
+  animation-name: checkmark;
+  -webkit-transform: scaleX(-1) rotate(135deg);
+  -moz-transform: scaleX(-1) rotate(135deg);
+  -ms-transform: scaleX(-1) rotate(135deg);
+  -o-transform: scaleX(-1) rotate(135deg);
+  transform: scaleX(-1) rotate(135deg);
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+.checkmark-circle .checkmark:after {
+  opacity: 1;
+  height: 75px;
+  width: 37.5px;
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -o-transform-origin: left top;
+  transform-origin: left top;
+  border-right: 15px solid #b0f8a9;
+  border-top: 15px solid #b0f8a9;
+  border-radius: 2.5px !important;
+  content: "";
+  left: 25px;
+  top: 75px;
+  position: absolute;
+}
+
+@-webkit-keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 37.5px;
+    opacity: 1;
+  }
+  40% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+  100% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+}
+@-moz-keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 37.5px;
+    opacity: 1;
+  }
+  40% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+  100% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+}
+@keyframes checkmark {
+  0% {
+    height: 0;
+    width: 0;
+    opacity: 1;
+  }
+  20% {
+    height: 0;
+    width: 37.5px;
+    opacity: 1;
+  }
+  40% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+  100% {
+    height: 75px;
+    width: 37.5px;
+    opacity: 1;
+  }
+}
+
+/* End of tick mark css */
+
+/* Profile page */
+
+.profile_component {
+  min-width: 250px;
+  width: 40vw;
+  background: #ffffff;
+  padding-right: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  box-shadow: 1px 1px 4px 5px #888888;
+}
+
+.profile_password_component {
+  min-width: 250px;
+  margin-top: calc(45px + 7vh);
+  width: 20vw;
+  background: #ffffff;
+  padding-right: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  box-shadow: 1px 1px 4px 5px #888888;
+}
+
+/* End of Profile page */
+
+/* Table section */
+.tablerow {
+  background: "black";
+}
+/* End of Table section */
+
+/* loading symbol */
+
+.loader {
+  position: relative;
+  margin: 0 auto;
+  width: 100px;
+}
+.loader:before {
+  content: "";
+  display: block;
+  padding-top: 100%;
+}
+.circular {
+  animation: rotate 2s linear infinite;
+  height: 100%;
+  transform-origin: center center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+.path {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+  stroke-linecap: round;
+}
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+@keyframes color {
+  100%,
+  0% {
+    stroke: #d62d20;
+  }
+  40% {
+    stroke: #0057e7;
+  }
+  66% {
+    stroke: #008744;
+  }
+  80%,
+  90% {
+    stroke: #ffa700;
+  }
+}
+body {
+  background-color: #eee;
+}
+
+/* end of laoding symbol */
