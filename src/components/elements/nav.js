@@ -97,40 +97,73 @@ class AddExp extends React.Component {
     let name = event.target.name;
     const value = [];
     for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
+      value.push(options[i]);
     }
     this.setState({
       [name]: value
     });
   };
 
-  HandleRequest = data => {
-    let dis = [],
-      symp = [];
-    for (let i in data) {
+  HandleSymptom = data => {
+    let dis = [];
+    for (let i = 0; i < 50; i++) {
       dis.push(
-        <MenuItem key={data.dis[i].spec_name} value={data.dis[i].spec_name}>
-          {data.specs[i].spec_name}
-        </MenuItem>
-      );
-      symp.push(
-        <MenuItem key={data.dis[i].spec_name} value={data.dis[i].spec_name}>
-          {data.specs[i].spec_name}
+        <MenuItem
+          key={data.symptoms[i].symp_name}
+          value={data.symptoms[i].symp_id}
+        >
+          {data.symptoms[i].symp_name}
         </MenuItem>
       );
     }
 
-    this.setState({ diseases: dis, symtoms: symp, loading: false });
+    this.setState({ loading: false, symtoms: dis });
+  };
+
+  HandleRequest = data => {
+    let dis = [];
+    for (let i = 0; i < 50; i++) {
+      dis.push(
+        <MenuItem
+          key={data.diseases[i].disease_name}
+          value={data.diseases[i].disease_id}
+        >
+          {data.diseases[i].disease_name}
+        </MenuItem>
+      );
+    }
+    this.setState({ diseases: dis });
+    let headers = {
+      Authorization: "Bearer " + getCookie("token1")[0].value
+    };
+    fetchAsynchronous(
+      "https://slac-backend.herokuapp.com/api/symptoms",
+      "GET",
+      undefined,
+      headers,
+      this.HandleSymptom
+    );
   };
 
   componentDidMount() {
     let headers = {
       Authorization: "Bearer " + getCookie("token1")[0].value
     };
-    fetchAsynchronous("expuri", "GET", undefined, headers, this.HandleRequest);
+    fetchAsynchronous(
+      "https://slac-backend.herokuapp.com/api/diseases",
+      "GET",
+      undefined,
+      headers,
+      this.HandleRequest
+    );
   }
+
+  HandleMainResponse = data => {
+    this.setState({
+      message: "Added the diagnossis successfully",
+      formLoading: false
+    });
+  };
 
   HandleFormSubmit = e => {
     e.preventDefault();
@@ -147,16 +180,22 @@ class AddExp extends React.Component {
       )
     });
     let data = {
-      description: this.state.name,
-      username: this.state.username,
-      password: this.state.password
+      cure_desc: this.state.description,
+      diseases: this.state.select_dis,
+      symptoms: this.state.select_sym
     };
     let headers = {
       "Content-Type": "application/json",
       Authorization: "Bearer " + getCookie("token1")[0].value
     };
-    let api;
-    fetchAsynchronous(api, "POST", data, headers, this.HandleResponse);
+    fetchAsynchronous(
+      "https://slac-backend.herokuapp.com/api/experience",
+      "POST",
+      data,
+      headers,
+      this.HandleMainResponse
+    );
+    this.setState({ formLoading: true });
   };
 
   render() {
@@ -168,10 +207,16 @@ class AddExp extends React.Component {
           <React.Fragment>
             {" "}
             <Typography variant="h6" id="modal-title">
-              Add Experience
+              Add Daignosis
             </Typography>
             <Grid container spacing={24}>
               <Grid item md={10}>
+                <br />
+                <p style={{ color: "green" }}>
+                  {this.state.message !== "" ? this.state.message : ""}
+                </p>
+                <br />
+
                 <InputLabel htmlFor="select-multiple">symtoms</InputLabel>
                 <Select
                   fullWidth
