@@ -207,7 +207,7 @@ class AddExp extends React.Component {
           <React.Fragment>
             {" "}
             <Typography variant="h6" id="modal-title">
-              Add Daignosis
+              Add Diagnosis
             </Typography>
             <Grid container spacing={24}>
               <Grid item md={10}>
@@ -327,7 +327,7 @@ class NavBarComponent extends React.Component {
                     color: "black"
                   }}
                 >
-                  logo
+                  GE
                 </a>
               </Typography>
             </Grid>
@@ -348,7 +348,7 @@ class NavBarComponent extends React.Component {
             </Grid>
           </Grid>
           <Button onClick={this.handleOpen} color="primary">
-            Add Experience
+            Add Diagnosis
           </Button>
           <Modal
             aria-labelledby="simple-modal-title"
@@ -382,7 +382,7 @@ class NavBarComponent extends React.Component {
                   color: "black"
                 }}
               >
-                logo
+                GE
               </a>
             </Typography>
           </Grid>

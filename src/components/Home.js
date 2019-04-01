@@ -1,6 +1,6 @@
 import React from "react";
 import { home } from "./../styles/style";
-import { withStyles } from "@material-ui/core";
+import { withStyles, CircularProgress } from "@material-ui/core";
 import { getCookie } from "./elements/cookie";
 import { NavBar } from "./elements/nav";
 import { Redirect } from "react-router-dom";
@@ -34,535 +34,124 @@ class ListV extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false
+      loading: false,
+      data: []
     };
+  }
+
+  HandleMainResponse = response => {
+    let dat = [];
+    for (let i in response.data) {
+      let symtoms = [];
+      for (let j in response.data[i].symptoms) {
+        symtoms.push(
+          <Chip
+            avatar={<Avatar>X</Avatar>}
+            label={response.data[i].symptoms[j]}
+          />
+        );
+      }
+      dat.push(
+        <Paper style={{ marginTop: 50, padding: 10 }}>
+          <Grid container spacing={24}>
+            <Grid item md={8}>
+              <h3>{response.data[i].name}</h3>
+              <p>
+                These are the list of all Symtoms and searched symtoms for the
+                disease
+              </p>
+              {symtoms}
+              {/* <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
+              <Chip
+                label={"sample text"}
+                onClick=""
+                style={{ background: "#a4f2f0" }}
+                clickable
+                icon={<FaceIcon />}
+              />{" "}
+              <Chip
+                label={"sample text"}
+                onClick=""
+                clickable
+                style={{ background: "#a4f2f0" }}
+                icon={<FaceIcon />}
+              />{" "}
+              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
+              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
+              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
+              <Chip
+                style={{ marginTop: 1 }}
+                avatar={<Avatar>X</Avatar>}
+                label={"sample text"}
+              />{" "}
+              <Chip
+                style={{ marginTop: 1 }}
+                avatar={<Avatar>X</Avatar>}
+                label={"sample text"}
+              />{" "}
+              <Chip
+                style={{ marginTop: 1 }}
+                avatar={<Avatar>X</Avatar>}
+                label={"sample text"}
+              />{" "}
+              <Chip
+                style={{ marginTop: 1 }}
+                avatar={<Avatar>X</Avatar>}
+                label={"sample text"}
+              />{" "}
+              <Chip
+                style={{ marginTop: 1 }}
+                avatar={<Avatar>X</Avatar>}
+                label={"sample text"}
+              />{" "} */}
+            </Grid>
+            <Grid item md={2} />
+            <Grid item md={2}>
+              <Chip
+                style={{ marginTop: 30 }}
+                label={response.data[i].prob}
+                color="primary"
+              />
+            </Grid>
+          </Grid>
+        </Paper>
+      );
+    }
+
+    this.setState({ data: dat, loading: false });
+  };
+
+  componentDidMount() {
+    this.setState({
+      message: "",
+      loading: true
+    });
+    console.log(this.state.select_sym);
+    let data = {
+      symptoms: this.props.data
+    };
+    let headers = {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + getCookie("token1")[0].value
+    };
+    fetchAsynchronous(
+      "https://slac-backend.herokuapp.com/api/diagnosis",
+      "POST",
+      data,
+      headers,
+      this.HandleMainResponse
+    );
+    this.setState({ formLoading: true });
   }
 
   render = () => {
     return (
       <React.Fragment>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
-        <Paper style={{ marginTop: 50, padding: 10 }}>
-          <Grid container spacing={24}>
-            <Grid item md={8}>
-              <h3>Name of the disease</h3>
-              <p>
-                These are the list of all Symtoms and searched symtoms for the
-                disease
-              </p>
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                style={{ background: "#a4f2f0" }}
-                clickable
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip
-                label={"sample text"}
-                onClick=""
-                clickable
-                style={{ background: "#a4f2f0" }}
-                icon={<FaceIcon />}
-              />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip avatar={<Avatar>X</Avatar>} label={"sample text"} />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-              <Chip
-                style={{ marginTop: 1 }}
-                avatar={<Avatar>X</Avatar>}
-                label={"sample text"}
-              />{" "}
-            </Grid>
-            <Grid item md={2} />
-            <Grid item md={2}>
-              <Chip style={{ marginTop: 30 }} label={"2.64"} color="primary" />
-            </Grid>
-          </Grid>
-        </Paper>
+        {this.state.loading === true ? (
+          <CircularProgress style={{ marginLeft: "35vw", marginTop: "10vw" }} />
+        ) : (
+          <React.Fragment>{this.state.data}</React.Fragment>
+        )}
       </React.Fragment>
     );
   };
@@ -646,7 +235,7 @@ class HomeComponent extends React.Component {
             style={{ marginLeft: "10vw", marginTop: "10vh" }}
           >
             <Grid item md={10}>
-              <InputLabel htmlFor="select-multiple">Symtoms</InputLabel>
+              <InputLabel htmlFor="select-multiple">Symptoms</InputLabel>
               <Select
                 fullWidth
                 multiple
